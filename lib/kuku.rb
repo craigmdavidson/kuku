@@ -13,6 +13,7 @@ module ChainAnalysis
   end
 end
 
+
 class Object
   include ChainAnalysis
   attr_accessor :next, :previous
@@ -29,6 +30,29 @@ class Object
     return Array[self] if self.next == nil
     a = Array[self] << self.next.as_unchained_array
     a.flatten
+  end  
+  def update_attributes hash
+    hash.each { |name, value| instance_variable_set("@#{name}", value) }
+  end  
+  def attributes
+    !instance_variables.empty? ? 
+      (instance_variables_as_hash) : 
+      (struct_as_hash self)
+  end
+  def instance_variables_as_hash
+    hash = Hash.new
+    instance_variables.each{|v|
+      hash[hash_key_for(v)] = instance_variable_get(v)
+    }
+    hash    
+  end
+  def struct_as_hash obj
+    hash = Hash.new
+    obj.each_pair {|name, value| hash[name] = value}
+    hash
+  end
+  def hash_key_for v
+    v.to_s.gsub("@","").to_sym
   end
 end
 
