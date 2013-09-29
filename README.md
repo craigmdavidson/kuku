@@ -1,2 +1,18 @@
 kuku
 ====
+
+Ruby object modifications.
+- Array as_chain
+- Array rank
+- Range near_top?, near_bottom?
+- Object attributes, update_attributes
+
+== INSTALL
+
+	gem install kuku
+	
+== DEPENDENCIES
+
+None
+
+
