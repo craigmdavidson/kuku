@@ -28,8 +28,17 @@ class Object
   end
   def as_unchained_array
     return Array[self] if self.next == nil
-    a = Array[self] << self.next.as_unchained_array
-    a.flatten
+    
+    unchained = []
+    item = self
+    unchained << item
+    while (item.next)
+      item = item.next
+      unchained << item
+    end
+    unchained.flatten 
+#    a = Array[self] << self.next.as_unchained_array
+#    a.flatten
   end  
   def update_attributes hash
     hash.each { |name, value| instance_variable_set("@#{name}", value) }
