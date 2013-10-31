@@ -1,12 +1,12 @@
 module ChainAnalysis
   def stability method_name, n=8
-    elements(method_name, n).stability    
+    elements(method_name, n).stats.stability    
   end
   def average_growth method_name, n=8
-    elements(method_name, n).average_growth
+    elements(method_name, n).stats.average_growth
   end  
   def mean method_name, n=8
-    elements(method_name, n).mean
+    elements(method_name, n).stats.mean
   end 
   def elements method_name, n=8
     as_unchained_array[0..(n-1)].map{|s| s.method(method_name).call}  
@@ -15,7 +15,7 @@ end
 
 
 class Object
-  include ChainAnalysis
+#  include ChainAnalysis
   attr_accessor :next, :previous
   def nvl v
     v ? v : 0
@@ -65,23 +65,7 @@ class Object
   end
 end
 
-
-class Array 
-  def as_chain
-    self.size.times{|i| 
-      a = self[i+1]
-      b = self[i-1]
-      (self[i].next = a) if a
-      (self[i].previous = b) if (b && i > 0)
-    }
-    self[0]
-  end
-  def rank
-    Rank.new self
-  end
-  def total
-    Totaler.new self
-  end
+module Summary
   def product
     reduce{|k,v| k*v} 
   end
@@ -106,11 +90,34 @@ class Array
   def growth
     result = Array.new
     (size-1).times {|i| result << ((self[i].to_f - self[i+1].to_f)/self[i+1].to_f) * 100 }
-    result
+    result.stats
   end
   def average_growth
     growth.mean
-  end  
+  end    
+end
+
+class Array 
+  def as_chain
+    self.size.times{|i| 
+      a = self[i+1]
+      b = self[i-1]
+      (self[i].next = a) if a
+      (self[i].previous = b) if (b && i > 0)
+      self[i].extend(ChainAnalysis)
+    }
+    self[0]
+  end
+  def rank
+    Rank.new self
+  end
+  def total
+    Totaler.new self
+  end
+  def stats
+    extend(Summary)
+    self
+  end
 end
 
 

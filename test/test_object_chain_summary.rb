@@ -11,7 +11,7 @@ class TestObjectChainSummary < Test::Unit::TestCase
   def test_mean    
     first = @n.as_chain
     assert_equal 2.0, first.a
-    assert_equal (@n.map{|m| m.a}).mean, first.mean("a", 9)
+    assert_equal (@n.map{|m| m.a}).stats.mean, first.mean("a", 9)
   end
 
 end
